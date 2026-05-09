@@ -29,6 +29,7 @@ Course capacity constraint violation:
 ## Root Cause
 
 Missing constraint:
+
 #(e: Enrollment | e.course = c) <= c.capacity
 
 ---
@@ -38,6 +39,7 @@ Missing constraint:
 Reintroduced constraint:
 
 fact CourseCapacityRule {
+  
     all c: Course |
         #(e: Enrollment | e.course = c) <= c.capacity
 }
