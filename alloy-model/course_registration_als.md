@@ -26,6 +26,7 @@ sig Enrollment {
 ## Fact 1: Course Capacity Rule
 
 fact CourseCapacityRule {
+     
     all c: Course |
         #(e: Enrollment | e.course = c) <= c.capacity
 }
@@ -34,7 +35,8 @@ fact CourseCapacityRule {
 
 ## Fact 2: No Duplicate Registration
 
-fact NoDuplicateRegistration {
+fact NoDuplicateRegistration { 
+
     all disj e1, e2: Enrollment |
         not (e1.student = e2.student and e1.course = e2.course)
 }
@@ -44,6 +46,7 @@ fact NoDuplicateRegistration {
 ## Fact 3: Student Course Limit
 
 fact StudentCourseLimit {
+
     all s: Student |
         #(e: Enrollment | e.student = s) <= 5
 }
@@ -53,6 +56,7 @@ fact StudentCourseLimit {
 # 3. Structural Validity Rule
 
 fact ValidEnrollment {
+
     all e: Enrollment |
         e.student in Student and
         e.course in Course
@@ -67,6 +71,7 @@ fact ValidEnrollment {
 ## Assertion 1: No Over Capacity
 
 assert NoOverCapacity {
+
     all c: Course |
         #(e: Enrollment | e.course = c) <= c.capacity
 }
@@ -78,6 +83,7 @@ check NoOverCapacity for 5
 ## Assertion 2: No Duplicate Registration
 
 assert NoDuplicate {
+  
     all e1, e2: Enrollment |
         (e1 != e2 and
          e1.student = e2.student and
