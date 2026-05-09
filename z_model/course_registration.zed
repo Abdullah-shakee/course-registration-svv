@@ -1,0 +1,168 @@
+-------------------------------
+Course Registration System
+Z Notation Specification
+-------------------------------
+
+[STUDENT, COURSE]
+
+--------------------------------
+CourseRegistrationState
+--------------------------------
+
+students : ℙ STUDENT
+courses : ℙ COURSE
+enrollment : STUDENT ↔ COURSE
+capacity : COURSE → ℕ
+
+--------------------------------
+State Invariants
+--------------------------------
+
+∀ s : STUDENT •
+#({ c : COURSE | (s, c) ∈ enrollment }) ≤ 5
+
+∀ c : COURSE •
+#({ s : STUDENT | (s, c) ∈ enrollment }) ≤ capacity(c)
+
+∀ s : STUDENT; c : COURSE •
+(s, c) ∈ enrollment ⇒
+s ∈ students ∧ c ∈ courses
+
+--------------------------------
+Explanation
+--------------------------------
+
+students → set of valid students
+courses → set of valid courses
+enrollment → relation between students and courses
+capacity → maximum allowed students in each course
+
+Invariant 1: A student can register in maximum 5 courses
+
+Invariant 2: Registered students in a course cannot exceed capacity
+
+Invariant 3: Every registration must involve valid student and course
+
+--------------------------------------------------
+Operation 1 : RegisterCourse
+--------------------------------------------------
+
+RegisterCourse
+ΔCourseRegistrationState
+
+s? : STUDENT
+c? : COURSE
+
+--------------------------------
+Preconditions
+--------------------------------
+
+s? ∈ students
+
+c? ∈ courses
+
+(s?, c?) ∉ enrollment
+
+#({ x : COURSE | (s?, x) ∈ enrollment }) < 5
+
+#({ x : STUDENT | (x, c?) ∈ enrollment })
+< capacity(c?)
+
+--------------------------------
+State Update
+--------------------------------
+
+enrollment' = enrollment ∪ { s? ↦ c? }
+
+students' = students
+courses' = courses
+capacity' = capacity
+
+--------------------------------------------------
+Operation 2 : DropCourse
+--------------------------------------------------
+
+DropCourse
+ΔCourseRegistrationState
+
+s? : STUDENT
+c? : COURSE
+
+--------------------------------
+Preconditions
+--------------------------------
+
+(s?, c?) ∈ enrollment
+
+--------------------------------
+State Update
+--------------------------------
+
+enrollment' = enrollment \ { s? ↦ c? }
+
+students' = students
+courses' = courses
+capacity' = capacity
+
+--------------------------------------------------
+State Transition Modeling
+--------------------------------------------------
+
+Before RegisterCourse
+
+students = { S1, S2 }
+
+courses = { C1, C2 }
+
+enrollment = { S1 ↦ C1 }
+
+--------------------------------
+Operation
+--------------------------------
+
+RegisterCourse(S2, C1)
+
+--------------------------------
+After RegisterCourse
+--------------------------------
+
+enrollment' = { S1 ↦ C1, S2 ↦ C1 }
+
+--------------------------------------------------
+Example of Invalid Transition
+--------------------------------------------------
+
+Invalid Operation:
+
+RegisterCourse(S1, C1)
+
+Explanation:
+Reason: Student already registered in course
+Result: Precondition fails
+State does NOT change
+
+--------------------------------------------------
+Optional Error Operation
+--------------------------------------------------
+
+RegisterError
+ΞCourseRegistrationState
+
+s? : STUDENT
+c? : COURSE
+
+--------------------------------
+Error Condition
+--------------------------------
+
+(s?, c?) ∈ enrollment
+
+--------------------------------
+Explanation
+--------------------------------
+
+Ξ means:
+No state change occurs
+
+Used to model invalid operations
+and rejected registrations.

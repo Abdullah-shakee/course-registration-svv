@@ -3,134 +3,172 @@
 
 ---
 
-## 1. System Overview
+# 1. System Overview
 
-**System Name:** Course Registration System  
+## System Name
+Course Registration System
 
-The system manages student enrollment in courses with strict constraints on:
-- Course capacity
-- Duplicate registration prevention
-- Student course load limits
+## Description
+The Course Registration System manages student enrollment in courses while enforcing strict constraints such as:
+
+- course capacity limits
+- no duplicate registration
+- maximum course load per student
+
+The system ensures consistency and correctness of registrations.
 
 ---
 
-## 2. Definitions
+# 2. Definitions
 
-| Term | Description |
-|------|------------|
+| Term | Meaning |
+|------|---------|
 | StudentID | Unique identifier for each student |
 | CourseID | Unique identifier for each course |
-| Registration | Relation between StudentID and CourseID |
+| Registration | Relationship between StudentID and CourseID |
 
 ---
 
-## 3. Functional Requirements
+# 3. Functional Requirements
 
-### FR1: Register Course
-A student can register for a course if all conditions are satisfied.
+## FR1: Register Course
 
-**Conditions:**
-- Student must exist  
-- Course must exist  
-- Course must not be full  
-- Student must not already be registered in the course  
-- Student must have fewer than 5 registered courses  
+The system shall allow a student to register for a course if all required conditions are satisfied.
 
----
-
-### FR2: Drop Course
-A student can drop a registered course.
-
-**Condition:**
-- Student must already be registered in the course  
+### Conditions
+- Student must exist
+- Course must exist
+- Course must not be full
+- Student must not already be registered in the course
+- Student must have fewer than 5 registered courses
 
 ---
 
-### FR3: Maintain Course Capacity
-- Each course has a fixed maximum capacity  
-- Default capacity = 30 students per course  
-- The system shall not allow registrations beyond capacity  
+## FR2: Drop Course
+
+The system shall allow a student to drop a registered course.
+
+### Conditions
+- Student must already be registered in the course
 
 ---
 
-### FR4: Prevent Duplicate Registration
-- A student cannot register in the same course more than once  
+## FR3: Maintain Course Capacity
+
+Each course shall have a fixed maximum capacity.
+
+### Rules
+- Default capacity = 30 students
+- Registration beyond capacity shall not be allowed
 
 ---
 
-### FR5: Limit Course Load
-- A student can register in a maximum of 5 courses simultaneously  
+## FR4: Prevent Duplicate Registration
+
+The system shall not allow a student to register in the same course more than once.
 
 ---
 
-## 4. Non-Functional Requirements
+## FR5: Limit Course Load
 
-### NFR1: Consistency
-- The system shall maintain a consistent state after every operation  
-- No invalid state (e.g., over-capacity, duplicate entries) is allowed  
+A student shall be allowed to register in a maximum of 5 courses simultaneously.
 
 ---
 
-### NFR2: Verifiability
-- All requirements must be expressible using formal logic  
-- Each operation must define preconditions and postconditions  
+# 4. Non-Functional Requirements
+
+## NFR1: Consistency
+
+The system shall maintain a consistent state after every operation.
+
+### Rules
+- No over-capacity registration allowed
+- No duplicate registration allowed
+- No invalid state permitted
 
 ---
 
-### NFR3: Input Validation
-- Invalid StudentID or CourseID shall be rejected  
-- Null or undefined inputs are not allowed  
+## NFR2: Verifiability
+
+All requirements shall be expressible using formal logic.
+
+### Rules
+Every operation must define:
+- preconditions
+- postconditions
 
 ---
 
-## 5. System State Representation
+## NFR3: Input Validation
+
+The system shall reject:
+- invalid StudentID
+- invalid CourseID
+- null inputs
+- undefined values
+
+---
+
+# 5. System State Representation
 
 Let:
 
-- **Students** = set of StudentID  
-- **Courses** = set of CourseID  
-- **Registered** ⊆ Students × Courses  
+- Students = set of StudentID
+- Courses = set of CourseID
+- Registered ⊆ Students × Courses
 
 ---
 
-## 6. System Invariants (CRITICAL)
+# 6. System Invariants
 
-These must ALWAYS hold:
-
-### INV1: Capacity Constraint
-For every course:  
-Number of registered students ≤ capacity  
+These conditions must ALWAYS remain true.
 
 ---
 
-### INV2: No Duplicate Registration
-Registered relation is a set → no duplicate pairs allowed  
+## INV1: Capacity Constraint
+
+For every course:
+
+Number of registered students ≤ course capacity
 
 ---
 
-### INV3: Course Load Limit
-For every student:  
-Number of registered courses ≤ 5  
+## INV2: No Duplicate Registration
+
+The Registered relation shall not contain duplicate pairs.
 
 ---
 
-### INV4: Valid Registration
-All registrations must involve valid students and courses  
+## INV3: Course Load Limit
+
+For every student:
+
+Number of registered courses ≤ 5
 
 ---
 
-## 7. Assumptions
+## INV4: Valid Registration
 
-- Students and courses are pre-defined  
-- Capacity is fixed and known  
-- No concurrency (only one operation executes at a time)  
+Every registration must involve:
+- a valid student
+- a valid course
 
 ---
 
-## 8. Traceability (Important for SVV)
+# 7. Assumptions
+
+- Students are pre-defined
+- Courses are pre-defined
+- Course capacity is fixed
+- Single operation executes at a time
+- No concurrent registrations occur
+
+---
+
+# 8. Traceability Matrix
 
 | Requirement | Related Invariant |
-|------------|------------------|
+|-------------|------------------|
 | FR1 | INV1, INV2, INV3, INV4 |
 | FR2 | INV4 |
 | FR3 | INV1 |
@@ -139,11 +177,12 @@ All registrations must involve valid students and courses
 
 ---
 
-## 9. Acceptance Criteria
+# 9. Acceptance Criteria
 
 | Requirement | Acceptance Condition |
-|------------|---------------------|
+|-------------|---------------------|
 | FR1 | Registration succeeds only if all conditions hold |
+| FR2 | Student can drop registered course |
 | FR3 | No course exceeds capacity |
 | FR4 | Duplicate registration is rejected |
 | FR5 | Student cannot exceed 5 courses |

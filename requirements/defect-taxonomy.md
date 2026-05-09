@@ -1,34 +1,41 @@
 # Defect Taxonomy
 
-This document identifies issues in initial requirements and how they were fixed.
+This document identifies defects found in the initial requirements and the corrections applied to improve clarity, consistency, and formal verifiability.
 
 ---
 
-## Defect Table
+# Defect Classification Table
 
 | ID | Requirement | Issue Type | Problem | Fix |
-|----|------------|------------|---------|-----|
-| D1 | "Fast registration" | Ambiguous | No measurable meaning | Removed vague term |
-| D2 | "Limited courses" | Non-verifiable | No number defined | Set limit = 5 courses |
-| D3 | "Available seats" | Incomplete | Capacity undefined | Set capacity = 30 students |
-| D4 | Input validation | Missing requirement | Not defined earlier | Added explicit validation rules |
+|----|-------------|------------|---------|-----|
+| D1 | “Fast registration” | Ambiguous | No measurable meaning | Removed vague wording |
+| D2 | “Limited courses” | Non-verifiable | Limit not specified | Maximum = 5 courses |
+| D3 | “Available seats” | Incomplete | Capacity not defined | Capacity set to 30 |
+| D4 | Input validation | Missing Requirement | Validation rules missing | Added validation constraints |
 
 ---
 
-## Summary
+# Summary
 
-- Ambiguous requirements were clarified or removed  
-- Non-verifiable requirements were converted into measurable constraints  
-- Missing requirements were added for completeness  
-- All fixes ensure compatibility with formal modeling (Z, VDM, Alloy)  
+The following improvements were made:
+
+- Ambiguous requirements were clarified or removed
+- Missing numerical constraints were formally defined
+- Validation rules were explicitly specified
+- All requirements were refined to support formal verification using:
+  - Z Notation
+  - VDM
+  - Alloy
 
 ---
 
-## Traceability
+# Traceability
 
 | Defect ID | Related Requirement |
-|----------|--------------------|
-| D1 | Removed (invalid requirement) |
-| D2 | FR5 (Course Load Limit) |
-| D3 | FR3 (Course Capacity) |
-| D4 | NFR3 (Input Validation) |
+|-----------|--------------------|
+| D1 | Removed invalid requirement |
+| D2 | FR5: Limit Course Load |
+| D3 | FR3: Maintain Course Capacity |
+| D4 | NFR3: Input Validation |
+
+---
