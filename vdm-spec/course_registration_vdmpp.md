@@ -12,7 +12,7 @@ COURSE  = token
 
 # 2. System State (Abstract Model)
 
-state CourseSystem of
+- state CourseSystem of
     - students : set of STUDENT
     - courses  : set of COURSE
     - enroll   : set of (STUDENT * COURSE)
