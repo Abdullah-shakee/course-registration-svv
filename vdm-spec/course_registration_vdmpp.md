@@ -12,12 +12,13 @@ COURSE  = token
 
 # 2. System State (Abstract Model)
 
-- state CourseSystem of
-    - students : set of STUDENT
-    - courses  : set of COURSE
-    - enroll   : set of (STUDENT * COURSE)
-    - capacity : COURSE -> nat
-- end
+state CourseSystem of
+
+    students : set of STUDENT
+    courses  : set of COURSE
+    enroll   : set of (STUDENT * COURSE)
+    capacity : COURSE -> nat
+end
 
 ---
 
@@ -98,7 +99,7 @@ post dropCourse(s, c, sys) ==
     let newSys = RESULT in
         newSys.enroll =
             sys.enroll \ { (s, c) } and
-            
+
         newSys.students = sys.students and
         newSys.courses  = sys.courses and
         newSys.capacity = sys.capacity
