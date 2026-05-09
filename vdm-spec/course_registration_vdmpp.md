@@ -17,7 +17,7 @@ COURSE  = token
     - courses  : set of COURSE
     - enroll   : set of (STUDENT * COURSE)
     - capacity : COURSE -> nat
-end
+- end
 
 ---
 
