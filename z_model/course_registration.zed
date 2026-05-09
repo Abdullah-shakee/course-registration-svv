@@ -18,15 +18,9 @@ capacity : COURSE → ℕ
 State Invariants
 --------------------------------
 
-∀ s : STUDENT •
-#({ c : COURSE | (s, c) ∈ enrollment }) ≤ 5
+∀ s : STUDENT • #({ c : COURSE | (s, c) ∈ enrollment }) ≤ 5
 
-∀ c : COURSE •
-#({ s : STUDENT | (s, c) ∈ enrollment }) ≤ capacity(c)
-
-∀ s : STUDENT; c : COURSE •
-(s, c) ∈ enrollment ⇒
-s ∈ students ∧ c ∈ courses
+∀ c : COURSE • #({ s : STUDENT | (s, c) ∈ enrollment }) ≤ capacity(c)
 
 --------------------------------
 Explanation
@@ -40,8 +34,6 @@ capacity → maximum allowed students in each course
 Invariant 1: A student can register in maximum 5 courses
 
 Invariant 2: Registered students in a course cannot exceed capacity
-
-Invariant 3: Every registration must involve valid student and course
 
 --------------------------------------------------
 Operation 1 : RegisterCourse
@@ -65,8 +57,7 @@ c? ∈ courses
 
 #({ x : COURSE | (s?, x) ∈ enrollment }) < 5
 
-#({ x : STUDENT | (x, c?) ∈ enrollment })
-< capacity(c?)
+#({ x : STUDENT | (x, c?) ∈ enrollment }) < capacity(c?)
 
 --------------------------------
 State Update
