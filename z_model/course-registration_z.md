@@ -3,176 +3,229 @@
 
 ---
 
-## 1. System State
+# 1. System State
 
+```z
 [STUDENT, COURSE]
-
-### CourseRegistrationState
-
-students : ℙ STUDENT  
-courses : ℙ COURSE  
-enrollment : STUDENT ↔ COURSE  
-capacity : COURSE → ℕ  
+```
 
 ---
 
-## 2. Invariants
+## CourseRegistrationState
 
-### INV1: Course Load Limit
+```z
+students   : ℙ STUDENT
+courses    : ℙ COURSE
+enrollment : STUDENT ↔ COURSE
+capacity   : COURSE → ℕ
+```
+
+---
+
+# 2. Invariants
+
+---
+
+## INV1: Course Load Limit
+
 For every student:
 
-∀ s : STUDENT • #({ c : COURSE | (s, c) ∈ enrollment }) ≤ 5  
+```z
+∀ s : STUDENT •
+#({ c : COURSE | (s, c) ∈ enrollment }) ≤ 5
+```
 
 ---
 
-### INV2: Course Capacity Limit
+## INV2: Course Capacity Limit
+
 For every course:
 
-∀ c : COURSE • #({ s : STUDENT | (s, c) ∈ enrollment }) ≤ capacity(c)  
+```z
+∀ c : COURSE •
+#({ s : STUDENT | (s, c) ∈ enrollment }) ≤ capacity(c)
+```
 
 ---
 
-## 3. Explanation
+# 3. Explanation
 
-- **students** → set of all students  
-- **courses** → set of all courses  
-- **enrollment** → relation between students and courses  
-- **capacity** → maximum seats per course  
-
----
-
-- **Invariant 1**: A student can register in maximum 5 courses
-- **Invariant 2**: Registered students in a course cannot exceed capacity
+- **students** → set of all students
+- **courses** → set of all courses
+- **enrollment** → relation between students and courses
+- **capacity** → maximum seats per course
 
 ---
 
-## 4. Operations
+## Invariant Meaning
+
+- **Invariant 1:** A student can register in maximum 5 courses
+- **Invariant 2:** Registered students in a course cannot exceed capacity
+
+---
+
+# 4. Operations
 
 ---
 
 # Operation 1: RegisterCourse
 
-### State Change
+## State Change
 
-ΔCourseRegistrationState  
+```z
+ΔCourseRegistrationState
 
-s? : STUDENT  
-c? : COURSE  
-
----
-
-### Preconditions
-
-- s? ∈ students  
-- c? ∈ courses  
-- (s?, c?) ∉ enrollment  
-- Student has < 5 courses  
-- Course is not full  
+s? : STUDENT
+c? : COURSE
+```
 
 ---
 
-### Formally
+## Preconditions
 
-#({ x : COURSE | (s?, x) ∈ enrollment }) < 5  
-#({ x : STUDENT | (x, c?) ∈ enrollment }) < capacity(c?)  
+- s? ∈ students
+- c? ∈ courses
+- (s?, c?) ∉ enrollment
+- Student has fewer than 5 courses
+- Course is not full
 
 ---
 
-### State Update
+## Formally
 
-enrollment' = enrollment ∪ { s? ↦ c? }  
+```z
+#({ x : COURSE | (s?, x) ∈ enrollment }) < 5
 
-students' = students  
-courses' = courses  
-capacity' = capacity  
+#({ x : STUDENT | (x, c?) ∈ enrollment }) < capacity(c?)
+```
+
+---
+
+## State Update
+
+```z
+enrollment' = enrollment ∪ { s? ↦ c? }
+
+students' = students
+courses'  = courses
+capacity' = capacity
+```
 
 ---
 
 # Operation 2: DropCourse
 
-### State Change
+## State Change
 
-ΔCourseRegistrationState  
+```z
+ΔCourseRegistrationState
 
-s? : STUDENT  
-c? : COURSE  
-
----
-
-### Preconditions
-
-- (s?, c?) ∈ enrollment  
+s? : STUDENT
+c? : COURSE
+```
 
 ---
 
-### State Update
+## Preconditions
 
-enrollment' = enrollment \ { s? ↦ c? }  
-
-students' = students  
-courses' = courses  
-capacity' = capacity  
+```z
+(s?, c?) ∈ enrollment
+```
 
 ---
 
-## 5. State Transition Example
+## State Update
 
-### Before Operation
+```z
+enrollment' = enrollment \ { s? ↦ c? }
 
-students = {S1, S2}  
-courses = {C1, C2}  
-enrollment = {S1 ↦ C1}  
+students' = students
+courses'  = courses
+capacity' = capacity
+```
 
 ---
 
-### Operation
+# 5. State Transition Example
 
+---
+
+## Before Operation
+
+```text
+students = {S1, S2}
+
+courses = {C1, C2}
+
+enrollment = {S1 ↦ C1}
+```
+
+---
+
+## Operation
+
+```text
 RegisterCourse(S2, C1)
+```
 
 ---
 
-### After Operation
+## After Operation
 
-enrollment' = {S1 ↦ C1, S2 ↦ C1}  
+```text
+enrollment' = {S1 ↦ C1, S2 ↦ C1}
+```
 
 ---
 
-## 6. Invalid Transition Example
+# 6. Invalid Transition Example
 
-### Operation
+---
 
+## Operation
+
+```text
 RegisterCourse(S1, C1)
+```
 
-### Reason
+---
+
+## Reason
 
 Student already enrolled in course.
 
-### Result
+---
 
-❌ Precondition fails  
-❌ No state change
+## Result
+
+- ❌ Precondition fails
+- ❌ No state change
 
 ---
 
-## 7. Error Operation (Optional)
+# 7. Error Operation (Optional)
 
-ΞCourseRegistrationState  
+```z
+ΞCourseRegistrationState
 
-s? : STUDENT  
-c? : COURSE  
-
----
-
-### Error Condition
-
-(s?, c?) ∈ enrollment  
+s? : STUDENT
+c? : COURSE
+```
 
 ---
 
-### Meaning
+## Error Condition
+
+```z
+(s?, c?) ∈ enrollment
+```
+
+---
+
+## Meaning
 
 - Ξ means **no state change**
 - Used for invalid operations
-- Helps formal verification tools detect rejected cases  
+- Helps formal verification tools detect rejected cases
 
 ---
