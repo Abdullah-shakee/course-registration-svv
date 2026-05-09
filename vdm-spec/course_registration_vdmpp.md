@@ -24,6 +24,7 @@ COURSE  = token
 # 3. Invariants (System Rules)
 
 inv CourseSystem ==
+
     forall s in set students & card({ c | (s, c) in set enroll }) <= 5
     and
     forall c in set courses & card({ s | (s, c) in set enroll }) <= capacity(c)
@@ -45,6 +46,7 @@ registerCourse : STUDENT * COURSE * CourseSystem -> CourseSystem
 ### Preconditions
 
 pre registerCourse(s, c, sys) ==
+
     s in set sys.students and
     c in set sys.courses and
     (s, c) not in set sys.enroll and
@@ -56,6 +58,7 @@ pre registerCourse(s, c, sys) ==
 ### Postconditions
 
 post registerCourse(s, c, sys) ==
+
     let newSys = RESULT in
         newSys.enroll =
             sys.enroll union { (s, c) } and
@@ -84,18 +87,18 @@ dropCourse : STUDENT * COURSE * CourseSystem -> CourseSystem
 
 ### Preconditions
 
-pre dropCourse(s, c, sys) ==
-    (s, c) in set sys.enroll
+pre dropCourse(s, c, sys) == (s, c) in set sys.enroll
 
 ---
 
 ### Postconditions
 
 post dropCourse(s, c, sys) ==
+
     let newSys = RESULT in
         newSys.enroll =
             sys.enroll \ { (s, c) } and
-
+            
         newSys.students = sys.students and
         newSys.courses  = sys.courses and
         newSys.capacity = sys.capacity
@@ -104,8 +107,7 @@ post dropCourse(s, c, sys) ==
 
 ### Functional Behavior
 
-dropCourse(s, c, sys) ==
-    sys mu (enroll |-> sys.enroll \ { (s, c) })
+dropCourse(s, c, sys) == sys mu (enroll |-> sys.enroll \ { (s, c) })
 
 ---
 
