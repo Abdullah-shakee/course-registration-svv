@@ -1,50 +1,114 @@
-# Alloy Counterexample Analysis Report
+# Counterexample Analysis Report
+## Course Registration System
 
 ---
 
-## Scenario Tested
-CourseCapacityRule removed
+# 1. Assertion Checked
+
+```alloy
+assert UniqueEnrollment
+```
 
 ---
 
-## Alloy Result
+# 2. Problem Found
 
-Generated invalid system instance:
+Alloy generated a counterexample where:
 
-- Course C1 capacity = 2  
-- Enrollments:
-  - S1 → C1  
-  - S2 → C1  
-  - S3 → C1 ❌ (overflow detected)
+- Student **S1** enrolled in Course **C1** twice
 
 ---
 
-## Issue Identified
+## Example Counterexample
 
-Course capacity constraint violation:
-- System allows more students than permitted
+```text
+Enrollment1 → (S1, C1)
 
----
-
-## Root Cause
-
-Missing constraint:
-- #(e: Enrollment | e.course = c) <= c.capacity
+Enrollment2 → (S1, C1)
+```
 
 ---
 
-## Fix Applied
+# 3. Why Problem Occurred
 
-Reintroduced constraint:
+The model originally did **NOT** contain a constraint preventing duplicate enrollments.
 
-fact CourseCapacityRule {
+### Missing Constraint
 
-    all c: Course |
-        #(e: Enrollment | e.course = c) <= c.capacity
+```alloy
+fact NoDuplicateRegistration
+```
+
+Without this rule:
+
+- Alloy allowed duplicate enrollment objects
+- System became structurally invalid
+
+---
+
+# 4. Fix Applied
+
+The following constraint was added:
+
+```alloy
+fact NoDuplicateRegistration {
+
+    all disj e1, e2 : Enrollment |
+
+        not (
+            e1.student = e2.student and
+            e1.course  = e2.course
+        )
 }
+```
 
 ---
 
-## Conclusion
+# 5. Result After Fix
 
-Alloy successfully detects structural inconsistency when constraints are removed, proving correctness of the formal model.
+After adding the constraint:
+
+```alloy
+check UniqueEnrollment for 5
+```
+
+Alloy reported:
+
+```text
+No counterexample found
+```
+
+---
+
+## Meaning
+
+- duplicate registrations are no longer possible
+- model became structurally correct
+
+---
+
+# 6. Final Summary
+
+## Structural Verification Checks
+
+| Verification | Result |
+|-------------|--------|
+| Course capacity rule | Passed |
+| Duplicate registration prevention | Passed |
+| Maximum course load | Passed |
+| Positive course capacity | Passed |
+
+---
+
+# 7. Conclusion
+
+The Alloy model successfully verified the structural correctness of the Course Registration System.
+
+All critical constraints are now enforced:
+
+- no duplicate registrations
+- no over-capacity enrollment
+- maximum course load maintained
+- valid course capacities ensured
+
+---

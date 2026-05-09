@@ -1,109 +1,83 @@
--------------------------------
-Course Registration System
-Alloy Specification
-Structural Verification Model
--------------------------------
+//--------------------------------
+-- Course Registration System
+//--------------------------------
 
 sig Student {}
 
 sig Course {
-    capacity: one Int
+    capacity : one Int
 }
 
 sig Enrollment {
-    student: one Student,
-    course: one Course
+    student : one Student,
+    course  : one Course
 }
 
-------------------------------------------------
-System Constraints (Facts)
-------------------------------------------------
+//--------------------------------
+// Constraints
+//--------------------------------
 
 fact CourseCapacityRule {
-    all c: Course |
-        #(e: Enrollment | e.course = c) <= c.capacity
+
+    all c : Course |
+
+        #(e : Enrollment | e.course = c)
+            <= c.capacity
 }
 
 fact NoDuplicateRegistration {
-    all disj e1, e2: Enrollment |
-        not (e1.student = e2.student and e1.course = e2.course)
+
+    all disj e1, e2 : Enrollment |
+
+        not (
+            e1.student = e2.student and
+            e1.course  = e2.course
+        )
 }
 
-fact StudentCourseLimit {
-    all s: Student |
-        #(e: Enrollment | e.student = s) <= 5
+fact MaximumCourseLoad {
+
+    all s : Student |
+
+        #(e : Enrollment | e.student = s)
+            <= 5
 }
 
---------------------------------
-Structural Rule
---------------------------------
+fact PositiveCapacity {
 
-fact ValidEnrollment {
-    all e: Enrollment |
-        e.student in Student and
-        e.course in Course
+    all c : Course |
+
+        c.capacity > 0
 }
 
-------------------------------------------------
-Assertions (Constraint Verification)
-------------------------------------------------
+//--------------------------------
+// Assertions
+//--------------------------------
 
--- Assertion 1: No course exceeds capacity
-assert NoOverCapacity {
-    all c: Course |
-        #(e: Enrollment | e.course = c) <= c.capacity
+assert UniqueEnrollment {
+
+    all disj e1, e2 : Enrollment |
+
+        not (
+            e1.student = e2.student and
+            e1.course  = e2.course
+        )
 }
 
-check NoOverCapacity for 5
+assert CapacitySafe {
 
-------------------------------------------------
+    all c : Course |
 
--- Assertion 2: No duplicate enrollment
-assert NoDuplicate {
-    all e1, e2: Enrollment |
-        (e1 != e2 and
-         e1.student = e2.student and
-         e1.course = e2.course)
-        implies false
+        #(e : Enrollment | e.course = c)
+            <= c.capacity
 }
 
-check NoDuplicate for 5
-
-------------------------------------------------
-Run Model (Generate Instances)
-------------------------------------------------
+//--------------------------------
+// Commands
+//--------------------------------
 
 run {} for 5
 
-------------------------------------------------
-Counterexample Analysis (IMPORTANT FOR SVV)
-------------------------------------------------
+check UniqueEnrollment for 5
 
-/*
-If CourseCapacityRule is removed:
-
-fact CourseCapacityRule {}
-
-Alloy may generate:
-
-Course C1 capacity = 2
-
-Enrollments:
-S1 -> C1
-S2 -> C1
-S3 -> C1   ❌ VIOLATION
-
-Problem:
-- Capacity constraint broken
-- System allows over-enrollment
-
-This proves constraint is REQUIRED for correctness.
-*/
-
-------------------------------------------------
-Conclusion
-
-- Model verifies structural correctness
-- Assertions ensure system safety
-- Counterexample proves necessity of constraints
-------------------------------------------------
+check CapacitySafe for 5

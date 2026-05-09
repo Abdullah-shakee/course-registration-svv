@@ -1,122 +1,177 @@
-# Course Registration System
-## Alloy Specification
-### Structural Verification Model
+# Alloy Structural Verification Model
+## Course Registration System
 
 ---
 
-# 1. Signatures
+# 1. Relational Model
+
+## ✔ Signatures
+
+```alloy
+//--------------------------------
+-- Course Registration System
+//--------------------------------
 
 sig Student {}
 
 sig Course {
-    capacity: one Int
+    capacity : one Int
 }
 
 sig Enrollment {
-    student: one Student,
-    course: one Course
+    student : one Student,
+    course  : one Course
 }
+```
 
 ---
 
-# 2. System Constraints (Facts)
+# 2. Constraints (Facts)
 
 ---
 
-## Fact 1: Course Capacity Rule
+## ✔ Constraint 1: Course Capacity
 
+```alloy
 fact CourseCapacityRule {
-     
-    all c: Course |
-        #(e: Enrollment | e.course = c) <= c.capacity
+
+    all c : Course |
+        #(e : Enrollment | e.course = c)
+            <= c.capacity
 }
+```
+
+### Meaning
+
+Total students enrolled in a course  
+cannot exceed course capacity.
 
 ---
 
-## Fact 2: No Duplicate Registration
+## ✔ Constraint 2: No Duplicate Registration
 
-fact NoDuplicateRegistration { 
+```alloy
+fact NoDuplicateRegistration {
 
-    all disj e1, e2: Enrollment |
-        not (e1.student = e2.student and e1.course = e2.course)
+    all disj e1, e2 : Enrollment |
+
+        not (
+            e1.student = e2.student and
+            e1.course  = e2.course
+        )
 }
+```
+
+### Meaning
+
+Same student cannot register  
+same course multiple times.
 
 ---
 
-## Fact 3: Student Course Limit
+## ✔ Constraint 3: Maximum Course Load
 
-fact StudentCourseLimit {
+```alloy
+fact MaximumCourseLoad {
 
-    all s: Student |
-        #(e: Enrollment | e.student = s) <= 5
+    all s : Student |
+
+        #(e : Enrollment | e.student = s)
+            <= 5
 }
+```
+
+### Meaning
+
+One student can register  
+maximum 5 courses.
 
 ---
 
-# 3. Structural Validity Rule
+## ✔ Constraint 4: Valid Capacity
 
-fact ValidEnrollment {
+```alloy
+fact PositiveCapacity {
 
-    all e: Enrollment |
-        e.student in Student and
-        e.course in Course
+    all c : Course |
+
+        c.capacity > 0
 }
+```
+
+### Meaning
+
+Every course must have positive capacity.
 
 ---
 
-# 4. Assertions (Verification)
+# 3. Assertion-Based Verification
 
 ---
 
-## Assertion 1: No Over Capacity
+## ✔ Assertion 1: No Duplicate Enrollment
 
-assert NoOverCapacity {
+```alloy
+assert UniqueEnrollment {
 
-    all c: Course |
-        #(e: Enrollment | e.course = c) <= c.capacity
+    all disj e1, e2 : Enrollment |
+
+        not (
+            e1.student = e2.student and
+            e1.course  = e2.course
+        )
 }
-
-check NoOverCapacity for 5
+```
 
 ---
 
-## Assertion 2: No Duplicate Registration
+## ✔ Assertion 2: Capacity Never Exceeded
 
-assert NoDuplicate {
-  
-    all e1, e2: Enrollment |
-        (e1 != e2 and
-         e1.student = e2.student and
-         e1.course = e2.course)
-        implies false
+```alloy
+assert CapacitySafe {
+
+    all c : Course |
+
+        #(e : Enrollment | e.course = c)
+            <= c.capacity
 }
-
-check NoDuplicate for 5
+```
 
 ---
 
-# 5. Model Execution
+# 4. Run and Check Commands
 
+```alloy
 run {} for 5
 
----
+check UniqueEnrollment for 5
 
-# 6. Verification Summary
-
-- Ensures course capacity is never exceeded  
-- Prevents duplicate student-course enrollment  
-- Enforces maximum course load per student (≤ 5)  
-- Validates structural correctness of enrollment relation  
+check CapacitySafe for 5
+```
 
 ---
 
-# 7. Counterexample Purpose (Important for SVV Viva)
+# 5. Verification Purpose
 
-If any fact is removed:
+This Alloy model verifies:
 
-- Alloy can generate a **counterexample**
-- Example: course overfilled or duplicate enrollment appears
+- course capacity constraints
+- duplicate registration prevention
+- maximum course load limits
+- structural correctness of enrollment relations
 
-👉 This proves why constraints are necessary
+---
+
+# 6. Counterexample Analysis Idea
+
+If any constraint is removed:
+
+- Alloy can generate invalid states
+- Example:
+  - duplicate enrollment
+  - course over-capacity
+  - unlimited student registrations
+
+This demonstrates why formal constraints are necessary.
 
 ---
