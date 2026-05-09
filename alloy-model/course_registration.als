@@ -15,9 +15,9 @@ sig Enrollment {
     course: one Course
 }
 
--------------------------------
+------------------------------------------------
 System Constraints (Facts)
--------------------------------
+------------------------------------------------
 
 fact CourseCapacityRule {
     all c: Course |
@@ -34,9 +34,9 @@ fact StudentCourseLimit {
         #(e: Enrollment | e.student = s) <= 5
 }
 
--------------------------------
-Structural Validity Rule
--------------------------------
+--------------------------------
+Structural Rule
+--------------------------------
 
 fact ValidEnrollment {
     all e: Enrollment |
@@ -44,9 +44,9 @@ fact ValidEnrollment {
         e.course in Course
 }
 
--------------------------------
-Assertions (Verification)
--------------------------------
+------------------------------------------------
+Assertions (Constraint Verification)
+------------------------------------------------
 
 -- Assertion 1: No course exceeds capacity
 assert NoOverCapacity {
@@ -56,7 +56,9 @@ assert NoOverCapacity {
 
 check NoOverCapacity for 5
 
--- Assertion 2: No duplicate registration
+------------------------------------------------
+
+-- Assertion 2: No duplicate enrollment
 assert NoDuplicate {
     all e1, e2: Enrollment |
         (e1 != e2 and
@@ -67,8 +69,41 @@ assert NoDuplicate {
 
 check NoDuplicate for 5
 
--------------------------------
-Model Execution
--------------------------------
+------------------------------------------------
+Run Model (Generate Instances)
+------------------------------------------------
 
 run {} for 5
+
+------------------------------------------------
+Counterexample Analysis (IMPORTANT FOR SVV)
+------------------------------------------------
+
+/*
+If CourseCapacityRule is removed:
+
+fact CourseCapacityRule {}
+
+Alloy may generate:
+
+Course C1 capacity = 2
+
+Enrollments:
+S1 -> C1
+S2 -> C1
+S3 -> C1   ❌ VIOLATION
+
+Problem:
+- Capacity constraint broken
+- System allows over-enrollment
+
+This proves constraint is REQUIRED for correctness.
+*/
+
+------------------------------------------------
+Conclusion
+
+- Model verifies structural correctness
+- Assertions ensure system safety
+- Counterexample proves necessity of constraints
+------------------------------------------------
