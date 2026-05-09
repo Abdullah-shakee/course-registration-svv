@@ -24,10 +24,9 @@ COURSE  = token
 # 3. Invariants (System Rules)
 
 inv CourseSystem ==
+
     forall s in set students & card({ c | (s, c) in set enroll }) <= 5
-
     and
-
     forall c in set courses & card({ s | (s, c) in set enroll }) <= capacity(c)
 
 ---
