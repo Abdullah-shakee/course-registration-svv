@@ -36,8 +36,7 @@ sig Enrollment {
 fact CourseCapacityRule {
 
     all c : Course |
-        #(e : Enrollment | e.course = c)
-            <= c.capacity
+        #(Enrollment.course = c) <= c.capacity
 }
 ```
 
@@ -76,8 +75,7 @@ fact MaximumCourseLoad {
 
     all s : Student |
 
-        #(e : Enrollment | e.student = s)
-            <= 5
+        #(eEnrollment.student = s) <= 5
 }
 ```
 
@@ -132,8 +130,7 @@ assert CapacitySafe {
 
     all c : Course |
 
-        #(e : Enrollment | e.course = c)
-            <= c.capacity
+        #(Enrollment.course = c)  <= c.capacity
 }
 ```
 
